@@ -6,6 +6,7 @@
 ADMIN_EMAIL=${ADMIN_EMAIL:-"admin@${DB_NAME:-wordpress}.com"}
 DB_HOST=${DB_HOST:-db}
 DB_NAME=${DB_NAME:-wordpress}
+DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-root}
 DB_PREFIX=${DB_PREFIX:-wp_}
 PERMALINKS=${PERMALINKS:-'/%year%/%monthnum%/%postname%/'}
@@ -32,7 +33,7 @@ apache_modules:
   - mod_rewrite
 
 core config:
-  dbuser: root
+  dbuser: $DB_USER
   dbpass: $DB_PASS
   dbname: $DB_NAME
   dbprefix: $DB_PREFIX
@@ -41,11 +42,15 @@ core config:
     define('WP_DEBUG', ${WP_DEBUG:-false});
     define('WP_DEBUG_LOG', ${WP_DEBUG_LOG:-false});
     define('WP_DEBUG_DISPLAY', ${WP_DEBUG_DISPLAY:-true});
+    if (isset($WP_SITEURL)) {
+      define('WP_SITEURL', $WP_SITEURL);
+    if (isset($WP_HOME)) {
+      define('WP_HOME', $WP_HOME);
 
 core install:
   url: ${AFTER_URL:-localhost:8080}
   title: $DB_NAME
-  admin_user: root
+  admin_user: $DB_USER
   admin_password: $DB_PASS
   admin_email: $ADMIN_EMAIL
   skip-email: true
